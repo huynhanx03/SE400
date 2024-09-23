@@ -3,16 +3,25 @@ package repository
 import (
 	"CRUD/model"
 	"context"
+	"log"
+	"os"
+	"testing"
+
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"log"
-	"testing"
 )
 
 func newMongoClient() *mongo.Client {
-	mongoTestClient, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb+srv://21522361:02102003nam@cluster0.p31hl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"))
+	err := godotenv.Load("../.env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	uri := os.Getenv("MONGO_URI")
+	log.Println(uri)
+	mongoTestClient, err := mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
 
 	if err != nil {
 		log.Fatalln("Error while connecting to MongoDB", err)
